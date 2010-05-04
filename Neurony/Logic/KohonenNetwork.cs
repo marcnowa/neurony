@@ -86,7 +86,7 @@ namespace Neurony.Logic
                 {
                     double difference = neuron.Weights[j] - data[j];
 
-                    neuron.Weights[j] -= difference / (phase * 30 * distanceFactor);
+                    neuron.Weights[j] -= difference / (phase * distanceFactor);
                 }
                 if (useNeighbourhood)
                     distanceFactor *= Math.Pow(5, phase);
