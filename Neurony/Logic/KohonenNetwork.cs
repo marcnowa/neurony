@@ -93,7 +93,10 @@ namespace Neurony.Logic
         private void UpdateWeights(double[] data, int phase, bool useNeighbourhood)
         {
             double distanceFactor = 1;
-            foreach (Neuron neuron in neurons.OrderBy(n => GetDistance(n.Weights, data)))
+
+            Neuron closest = neurons.OrderBy(n => GetDistance(n.Weights, data)).First();
+
+            foreach (Neuron neuron in neurons.OrderBy(n => GetDistance(n.Position, closest.Position)))
             {
                 for (int j = 0; j < data.Length; j++)
                 {
