@@ -8,10 +8,10 @@ namespace Neurony.Logic
     class Neuron
     {
         private double m_Bias;
-        private double[] m_Weights;
+        public double[] Weights;
         private double m_Result;
 
-        private TransitionFunction m_TransitionFunction;
+        public TransitionFunction TransitionFunction;
 
         public Neuron(double[] weights, double bias)
         {
@@ -25,13 +25,13 @@ namespace Neurony.Logic
         private void Init(double[] weights, double bias, TransitionFunction function)
         {
             m_Bias = bias;
-            m_Weights = weights;
-            m_TransitionFunction = function;
+            Weights = weights;
+            TransitionFunction = function;
         }
 
         private double ApplyTransitionFunction(double input)
         {
-            switch (m_TransitionFunction)
+            switch (TransitionFunction)
             {
                 case TransitionFunction.Linear:
                     return input;
@@ -46,16 +46,28 @@ namespace Neurony.Logic
 
         public double Compute(double[] input)
         {
-            if (input.Length != m_Weights.Length)
+            if (input.Length != Weights.Length)
                 throw new System.ArgumentException();
 
             double result = m_Bias;
 
             for (int i = 0; i < input.Length; i++)
-                result += input[i] * m_Weights[i];
+                result += input[i] * Weights[i];
 
             m_Result = ApplyTransitionFunction(result);
             return m_Result;
+        }
+
+        public override string ToString()
+        {
+            string result = "\t\t<neuron>" + Environment.NewLine;
+            foreach (double weight in Weights)
+            {
+                result += "\t\t\t<connection weight=\"" + weight + "\"/>" + Environment.NewLine;
+            }
+            result += "\t\t\t<bias weight=\"" + m_Bias + "\"/>" + Environment.NewLine;
+            result += "\t\t</neuron>" + Environment.NewLine;
+            return result;
         }
     }
 }

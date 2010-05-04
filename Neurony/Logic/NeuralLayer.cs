@@ -7,17 +7,28 @@ namespace Neurony.Logic
 {
     class NeuralLayer
     {
-        private Neuron[] m_Neurons;
+        public Neuron[] Neurons;
         public NeuralLayer(Neuron[] neurons)
         {
-            m_Neurons = neurons;
+            Neurons = neurons;
         }
         public double[] Compute(double[] input)
         {
-            double[] result = new double[m_Neurons.Length];
-            for (int i = 0; i < m_Neurons.Length; i++)
-                result[i] = m_Neurons[i].Compute(input);
+            double[] result = new double[Neurons.Length];
+            for (int i = 0; i < Neurons.Length; i++)
+                result[i] = Neurons[i].Compute(input);
 
+            return result;
+        }
+
+        public override string ToString()
+        {
+            string result = "\t<layer transition_function=\"" + Neurons[0].TransitionFunction + "\">" + Environment.NewLine;
+            foreach (Neuron neuron in Neurons)
+            {
+                result += neuron.ToString();
+            }
+            result += "\t</layer>" + Environment.NewLine;
             return result;
         }
     }

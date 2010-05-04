@@ -10,13 +10,14 @@ namespace Neurony.XML
 {
     class XMLNetworkCreator
     {
-        static public NeuralNetwork Create(string path)
+        static public AbstractNeuralNetwork Create(string path)
         {
             using (XmlReader reader = XmlReader.Create(path))
             {
                 XPathDocument doc = new XPathDocument(reader);
                 XPathNavigator rootNav = doc.CreateNavigator();
                 rootNav.MoveToChild("network", "");
+                string type = rootNav.GetAttribute("type", "");
 
                 List<NeuralLayer> layers = new List<NeuralLayer>();
                 foreach (XPathNavigator layerNav in rootNav.SelectChildren("layer", ""))
@@ -53,7 +54,10 @@ namespace Neurony.XML
                     }
                     layers.Add(new NeuralLayer(neurons.ToArray()));
                 }
-                return new NeuralNetwork(layers.ToArray());
+                if (type == "kohonen")
+                    return new KohonenNetwork(layers[0].Neurons);
+                else
+                    return new NeuralNetwork(layers.ToArray());
             }
         }
     }
