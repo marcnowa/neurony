@@ -11,6 +11,17 @@ namespace Neurony
     {
         static void Main(string[] args)
         {
+            /*KohonenNetwork knet = new KohonenNetwork(3, 10, false, 3);
+            foreach (Neuron item in knet.Layers[0].Neurons)
+            {
+                for (int i = 0; i < item.Position.Length; i++)
+                {
+                    Console.Write(item.Position[i] + " ");
+                }
+                Console.WriteLine();
+            }
+            Console.ReadLine();*/
+
             bool learn = false;
             String learnFilename = "";
             bool test = false;
@@ -21,6 +32,8 @@ namespace Neurony
             String outputFile = "";
             bool input = false;
             String inputFilename = "";
+
+            int dimension = 2;
 
             for (int i = 0; i < args.Length; i++)
             {
@@ -56,6 +69,11 @@ namespace Neurony
                     testFilename = args[i + 1];
                     i++;
                 }
+                if (args[i] == "-d")
+                {
+                    dimension = int.Parse(args[i + 1]);
+                    i++;
+                }
             }
 
             AbstractNeuralNetwork net = null;
@@ -69,7 +87,7 @@ namespace Neurony
             {
                 double[][] data = ReadData(learnFilename);
 
-                net = new KohonenNetwork(data[0].Length, data.Length, randomWeights, 2);
+                net = new KohonenNetwork(data[0].Length, data.Length, randomWeights, dimension);
                 (net as KohonenNetwork).Learn(data, 10000, useNeighbourhood);
             }
 
