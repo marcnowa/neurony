@@ -11,22 +11,6 @@ namespace Neurony
     {
         static void Main(string[] args)
         {
-            /*NeuralNetwork net = XML.XMLNetworkCreator.Create(args[0]);
-
-            double[] result = net.Compute(new double[2] { 0, 0 });
-            Console.WriteLine(result[0]);
-
-            result = net.Compute(new double[2] { 0, 1.0 });
-            Console.WriteLine(result[0]);
-
-            result = net.Compute(new double[2] { 1.0, 0 });
-            Console.WriteLine(result[0]);
-
-            result = net.Compute(new double[2] { 1.0, 1.0 });
-            Console.WriteLine(result[0]);
-
-            Console.WriteLine(net.ToString());*/
-
             bool learn = false;
             String learnFilename = "";
             bool test = false;
@@ -85,7 +69,7 @@ namespace Neurony
             {
                 double[][] data = ReadData(learnFilename);
 
-                net = new KohonenNetwork(data[0].Length, data.Length, randomWeights);
+                net = new KohonenNetwork(data[0].Length, data.Length, randomWeights, 2);
                 (net as KohonenNetwork).Learn(data, 10000, useNeighbourhood);
             }
 

@@ -45,17 +45,16 @@ namespace Neurony.Logic
         {
             this.neurons = neurons;
         }
-
-        public KohonenNetwork(int inputSize, int neuronsSize, bool randomWeights)
+        public KohonenNetwork(int inputSize, int neuronsSize, bool randomWeights, int neighbourhoodDimension)
         {
-            Init(inputSize, neuronsSize, randomWeights);
+            Init(inputSize, neuronsSize, randomWeights, neighbourhoodDimension);
         }
         public KohonenNetwork(int inputSize, int neuronsSize)
         {
-            Init(inputSize, neuronsSize, false);
+            Init(inputSize, neuronsSize, false, 2);
         }
 
-        private void Init(int inputSize, int neuronsSize, bool randomWeights)
+        private void Init(int inputSize, int neuronsSize, bool randomWeights, int neighbourhoodDimension)
         {
             neurons = new Neuron[neuronsSize];
 
@@ -65,6 +64,20 @@ namespace Neurony.Logic
                 if (randomWeights)
                     randomFeel(weights);
                 neurons[j] = new Neuron(weights, 0);
+            }
+
+            int length = (int)Math.Ceiling(Math.Pow(neuronsSize, 1.0 / neighbourhoodDimension));
+            for (int i = 0; i < neuronsSize; i++)
+            {
+                double[] pos = new double[neighbourhoodDimension];
+                int p = i;
+                for (int j = 0; j < neighbourhoodDimension-1; j++)
+                {
+                    pos[j] = p % length;
+                    p /= length;
+                }
+                pos[neighbourhoodDimension - 1] = p;
+                neurons[i].Position = pos;
             }
         }
 

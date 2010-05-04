@@ -11,6 +11,8 @@ namespace Neurony.Logic
         public double[] Weights;
         private double m_Result;
 
+        public double[] Position;
+
         public TransitionFunction TransitionFunction;
 
         public Neuron(double[] weights, double bias)
