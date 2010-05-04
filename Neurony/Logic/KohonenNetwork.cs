@@ -8,6 +8,7 @@ namespace Neurony.Logic
     class KohonenNetwork : AbstractNeuralNetwork
     {
         private Neuron[] neurons;
+        private int phases = 8;
 
         public override string Type
         {
@@ -85,10 +86,10 @@ namespace Neurony.Logic
                 {
                     double difference = neuron.Weights[j] - data[j];
 
-                    neuron.Weights[j] -= difference / (phase * 100 * distanceFactor);
+                    neuron.Weights[j] -= difference / (phase * 30 * distanceFactor);
                 }
-                if (useNeighbourhood) 
-                    distanceFactor *= Math.Pow(10, phase);
+                if (useNeighbourhood)
+                    distanceFactor *= Math.Pow(5, phase);
             }
         }
         
@@ -105,7 +106,6 @@ namespace Neurony.Logic
 
         public void Learn(double[][] data, int length, bool useNeighbourhood)
         {
-            int phases = 4;
             for (int phase = 1; phase < phases + 1; phase++)
             {
                 for (int i = 0; i < length / phases; i++)
