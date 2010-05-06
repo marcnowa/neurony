@@ -10,19 +10,20 @@ namespace Neurony.XML
 {
     class XMLNetworkCreator
     {
-        static public AbstractNeuralNetwork Create(string path)
+        static public NeuralNetwork Create(string path)
         {
             using (XmlReader reader = XmlReader.Create(path))
             {
                 XPathDocument doc = new XPathDocument(reader);
                 XPathNavigator rootNav = doc.CreateNavigator();
                 rootNav.MoveToChild("network", "");
-                string type = rootNav.GetAttribute("type", "");
 
-                List<NeuralLayer> layers = new List<NeuralLayer>();
+                List<AbstractNeuralLayer> layers = new List<AbstractNeuralLayer>();
                 foreach (XPathNavigator layerNav in rootNav.SelectChildren("layer", ""))
                 {
                     TransitionFunction transitionFunction = TransitionFunction.Linear;
+
+                    string type = layerNav.GetAttribute("type", "");
 
                     string tf = layerNav.GetAttribute("transition_function", "");
                     if (tf.Equals("sigmoid"))
@@ -52,12 +53,17 @@ namespace Neurony.XML
 
                         neurons.Add(new Neuron(fractions.ToArray(), bias, transitionFunction));
                     }
-                    layers.Add(new NeuralLayer(neurons.ToArray()));
+                    switch (type)
+                    {
+                        case "kohonen":
+                            layers.Add(new KohonenLayer(neurons.ToArray()));
+                            break;
+                        case "normal":
+                            layers.Add(new NeuralLayer(neurons.ToArray()));
+                            break;
+                    }
                 }
-                if (type == "kohonen")
-                    return new KohonenNetwork(layers[0].Neurons);
-                else
-                    return new NeuralNetwork(layers.ToArray());
+                return new NeuralNetwork(layers.ToArray());
             }
         }
     }

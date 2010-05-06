@@ -45,8 +45,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Logic\AbstractNeuralNetwork.cs" />
-    <Compile Include="Logic\KohonenNetwork.cs" />
+    <Compile Include="Logic\AbstractNeuralLayer.cs" />
+    <Compile Include="Logic\KohonenLayer.cs" />
     <Compile Include="Logic\NeuralLayer.cs" />
     <Compile Include="Logic\NeuralNetwork.cs" />
     <Compile Include="Logic\Neuron.cs" />

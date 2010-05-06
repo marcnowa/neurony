@@ -5,30 +5,37 @@ using System.Text;
 
 namespace Neurony.Logic
 {
-    class NeuralNetwork : Neurony.Logic.AbstractNeuralNetwork
+    class NeuralNetwork
     {
-        private NeuralLayer[] layers;
-        public override NeuralLayer[] Layers
+        private AbstractNeuralLayer[] layers;
+        public AbstractNeuralLayer[] Layers
         {
             get { return layers; }
         }
-        public override string Type
-        {
-            get { return "normal"; }
-        }
 
-        public NeuralNetwork(NeuralLayer[] layers)
+        public NeuralNetwork(AbstractNeuralLayer[] layers)
         {
             this.layers = layers;
         }
 
-        public override double[] Output(double[] data)
+        public double[] Output(double[] data)
         {
-            foreach (NeuralLayer layer in Layers)
+            foreach (AbstractNeuralLayer layer in Layers)
             {
-                data = layer.Compute(data);
+                data = layer.Output(data);
             }
             return data;
+        }
+
+        public override string ToString()
+        {
+            string result = "<network>" + Environment.NewLine;
+            foreach (AbstractNeuralLayer layer in Layers)
+            {
+                result += layer.ToString();
+            }
+            result += "</network>";
+            return result;
         }
     }
 }

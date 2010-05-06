@@ -5,14 +5,22 @@ using System.Text;
 
 namespace Neurony.Logic
 {
-    class NeuralLayer
+    class NeuralLayer : AbstractNeuralLayer
     {
-        public Neuron[] Neurons;
+        private Neuron[] neurons;
+
+        public override Neuron[] Neurons
+        {
+            get
+            {
+                return neurons;
+            }
+        }
         public NeuralLayer(Neuron[] neurons)
         {
-            Neurons = neurons;
+            this.neurons = neurons;
         }
-        public double[] Compute(double[] input)
+        public override double[] Output(double[] input)
         {
             double[] result = new double[Neurons.Length];
             for (int i = 0; i < Neurons.Length; i++)
@@ -21,15 +29,9 @@ namespace Neurony.Logic
             return result;
         }
 
-        public override string ToString()
+        public override string Type
         {
-            string result = "\t<layer transition_function=\"" + Neurons[0].TransitionFunction + "\">" + Environment.NewLine;
-            foreach (Neuron neuron in Neurons)
-            {
-                result += neuron.ToString();
-            }
-            result += "\t</layer>" + Environment.NewLine;
-            return result;
+            get { return "normal"; }
         }
     }
 }
