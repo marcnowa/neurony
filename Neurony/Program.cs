@@ -17,6 +17,7 @@ namespace Neurony
             String testFilename = "";
             bool useNeighbourhood = true;
             bool randomWeights = false;
+            double[] randomWeightsLimits = null;
             bool saveOutputNet = false;
             String outputFile = "";
             bool input = false;
@@ -45,6 +46,12 @@ namespace Neurony
                 if (args[i] == "-rw" || args[i] == "--random-weights")
                 {
                     randomWeights = true;
+                    string limits = args[i + 1];
+                    i++;
+                    string[] lim = limits.Split(new char[1] { ';' }, 2);
+                    randomWeightsLimits = new double[2];
+                    randomWeightsLimits[0] = double.Parse(lim[0]);
+                    randomWeightsLimits[1] = double.Parse(lim[1]);
                 }
                 if (args[i] == "-o")
                 {
@@ -63,6 +70,12 @@ namespace Neurony
                     dimension = int.Parse(args[i + 1]);
                     i++;
                 }
+
+                if (args[i] == "-h")
+                {
+                    Console.WriteLine(File.ReadAllText("Help.txt"));
+                    return;
+                }
             }
 
             NeuralNetwork net = null;
@@ -76,7 +89,7 @@ namespace Neurony
             {
                 double[][] data = ReadData(learnFilename);
 
-                KohonenLayer layer = new KohonenLayer(data[0].Length, data.Length, randomWeights, dimension);
+                KohonenLayer layer = new KohonenLayer(data[0].Length, data.Length, randomWeights, randomWeightsLimits, dimension);
                 net = new NeuralNetwork(new AbstractNeuralLayer[1]{layer});
                 layer.Learn(data, 10000, useNeighbourhood);
             }

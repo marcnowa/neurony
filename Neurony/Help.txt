@@ -1,0 +1,9 @@
+﻿Możliwe opcje:
+-l <plik> - wczytuje <plik> jako zbiór uczący
+	-nn | --no-neighbourhood - nie bierze pod uwagę sąsiedztwa podczas uczenia
+	-rw <przedział> - inicjalizuje wagi neuronów losowymi wagami z przedziału
+		<przedział> podany w formacie liczba;liczba (np. -rw -1;1)
+	-d - wymiar sąsiedztwa
+-i <plik> - wczytuje <plik> w formacie XML jako opis sieci neuronowej, której należy użyć
+-o <plik> - zapisuje nauczoną sieć do <pliku> w formacie XML
+-t <plik> - wczytuje <plik> z danymi testowymi, na których należy przetestować nauczoną lub wczytaną sieć
