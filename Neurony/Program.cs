@@ -11,7 +11,7 @@ namespace Neurony
     {
         static void Main(string[] args)
         {
-            bool learn = false;
+            bool learn = true;
             String learnFilename = "";
             bool test = false;
             String testFilename = "";
