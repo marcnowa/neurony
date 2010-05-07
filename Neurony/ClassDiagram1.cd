@@ -1,0 +1,60 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="Neurony.Logic.AbstractNeuralLayer" Collapsed="true">
+    <Position X="1.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAIAAAAAAEAAAIAAAAAAAAAAAAAQAAAAAAAAA=</HashCode>
+      <FileName>Logic\AbstractNeuralLayer.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Neurony.Logic.KohonenLayer" Collapsed="true">
+    <Position X="0.5" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAgAABAIAAAAAAAAAAIAAIABAAAAAAAAQAGgAAAAAA=</HashCode>
+      <FileName>Logic\KohonenLayer.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Neurony.Logic.NeuralLayer" Collapsed="true">
+    <Position X="2.75" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAgAAAAIAAAAAAAAAAIAAAAAAAAAAAAAQAAAAAAAAA=</HashCode>
+      <FileName>Logic\NeuralLayer.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Neurony.Logic.NeuralNetwork" Collapsed="true">
+    <Position X="5.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAEAAAIAAAAAAAAAAAEAAAABAAAAAA=</HashCode>
+      <FileName>Logic\NeuralNetwork.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Neurony.Logic.Neuron" Collapsed="true">
+    <Position X="7" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>BEAAAAAAAAAgAAAkAAAAAAABBAAAAAAAAEACAAAAAAA=</HashCode>
+      <FileName>Logic\Neuron.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Neurony.Program" Collapsed="true">
+    <Position X="5.25" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAQBAAEAAAAAAAAAAAAAAAAAAAAADAAAAAA=</HashCode>
+      <FileName>Program.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Neurony.XML.XMLNetworkCreator" Collapsed="true">
+    <Position X="7" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAA=</HashCode>
+      <FileName>XML\XMLNetworkCreator.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Enum Name="Neurony.Logic.TransitionFunction" Collapsed="true">
+    <Position X="5.25" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAkAAAAAAA=</HashCode>
+      <FileName>Logic\TransitionFunction.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Font Name="Tahoma" Size="9.75" />
+</ClassDiagram>
