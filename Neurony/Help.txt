@@ -7,3 +7,31 @@
 -i <plik> - wczytuje <plik> w formacie XML jako opis sieci neuronowej, której należy użyć
 -o <plik> - zapisuje nauczoną sieć do <pliku> w formacie XML
 -t <plik> - wczytuje <plik> z danymi testowymi, na których należy przetestować nauczoną lub wczytaną sieć
+
+-lcp <plik> - wczytuje plik jako zbiór uczący dla metody Counter Propagation
+
+
+Przykłady uruchomienia:
+	>Neurony.exe -l kohonen/learn.dat -rw 0;1 -o koh.xml -t kohonen\test.dat
+	>Neurony.exe -i koh.xml -t kohonen/test.dat
+	>Neurony.exe -lcp cp/learn.dat -rw 0;1 -o cpOutput.xml
+		 -t cp\test.dat
+	 
+
+TO DO
+sparametryzować: ilosc krokow, wspolczynniki uczenia
+regula delta
+sprawko
+
+Lista zmian:	
+	+ Program: uruchamianie z opcja -lcp (learn-counter-propagation) 
+		// musi byc odpowiedni plik uczacy, na ktorego podstawie tworzymy siec (format tego pliku determinuje strukture sieci - ilosc neuronow w 2giej warstwie i w warstwie kohonnena (tyle ile rodzajow "obrazkow" uczacych))
+	+ wczytywanie danych z pliku uczacego
+		private static List<double[][]> Program.ReadCounterPropagationData(String learnFilename)
+	+ dodatkowy konstruktor NeuralLayer i GrossbergsLayer (jak to ładnie zrobic?)
+		public NeuralLayer.NeuralLayer (int inputSize, int neuronsSize, bool randomWeights, double[] randomWeightsLimits)
+	+ uczenie z nauczycielem warstwy "Grossberga"
+		public void NeuralLayer.Learn(double[][] kohOutput, double[][] expectedVal, int length)
+	
+
+	

@@ -10,8 +10,9 @@ namespace Neurony
     class Program
     {
         static void Main(string[] args)
-        {
+        {          
             bool learn = false;
+            bool cp_learn = false;
             String learnFilename = "";
             bool test = false;
             String testFilename = "";
@@ -33,12 +34,18 @@ namespace Neurony
                     inputFilename = args[i + 1];
                     i++;
                 }
-                if (args[i] == "-l")
+				if (args[i] == "-l" || args[i] == "--learn")
                 {
                     learn = true;
                     learnFilename = args[i + 1];
                     i++;
+                } else if (args[i] == "-lcp" || args[i]=="--learn-counter-propagation")
+                {
+                    cp_learn = true;
+                    learnFilename = args[i + 1];
+                    i++;
                 }
+                
                 if (args[i] == "-nn" || args[i]=="--no-neighbourhood")
                 {
                     useNeighbourhood = false;
@@ -89,9 +96,72 @@ namespace Neurony
             {
                 double[][] data = ReadData(learnFilename);
 
-                KohonenLayer layer = new KohonenLayer(data[0].Length, data.Length, randomWeights, randomWeightsLimits, dimension);
-                net = new NeuralNetwork(new AbstractNeuralLayer[1]{layer});
-                layer.Learn(data, 10000, useNeighbourhood);
+                int neuralCount = data.Length;
+                int inputSize = data[0].Length;
+                KohonenLayer kohonenLayer = new KohonenLayer(inputSize, neuralCount, randomWeights, randomWeightsLimits, dimension);                
+                net = new NeuralNetwork(new AbstractNeuralLayer[1] {kohonenLayer});
+                kohonenLayer.Learn(data, 10000, useNeighbourhood);
+            }
+            else if (cp_learn)
+            {
+                //dane wejściowe dla warstwy Kohonena + wyjściowe dla warstwy 2giej (output programu)
+                List<double[][]> data = ReadCounterPropagationData(learnFilename);
+                
+                double[][] kohonenInput = data[0];
+                double[][] expectedOutputForSecondLayer = data[1];
+
+                    foreach (double[] inputData in kohonenInput) {
+                        Console.Write(" >> ");
+                        foreach (var d in inputData) {
+                            Console.Write(d + " ");
+                        }
+                    } Console.WriteLine();
+                    foreach (double[] m in expectedOutputForSecondLayer) {
+                        Console.Write(" >> ");
+                        foreach (var de in m) {
+                            Console.Write(de + " ");
+                        }
+                    } Console.WriteLine();
+
+                int inputSize = kohonenInput[0].Length;
+                
+                int neuralCount = kohonenInput.Length; // == expectedOutputForSecondLayer.Length
+               
+                KohonenLayer kohonenLayer = new KohonenLayer(inputSize, neuralCount, randomWeights, randomWeightsLimits, dimension);
+                
+                inputSize = neuralCount;
+                neuralCount = expectedOutputForSecondLayer[0].Length;
+				NeuralLayer secondLayer = new NeuralLayer(inputSize, neuralCount, randomWeights, randomWeightsLimits);
+
+                net = new NeuralNetwork(new AbstractNeuralLayer[2] { kohonenLayer, secondLayer });
+                kohonenLayer.Learn(kohonenInput, 10000, useNeighbourhood);
+                Console.WriteLine("Warstwa Kohonena zostala nauczona rozpoznawania wzorcow");
+
+                List<double[]> kohonenOutput = new List<double[]>();
+                foreach (double[] inputData in kohonenInput)
+                {
+					double [] kohOut = kohonenLayer.Output(inputData);
+                    kohonenOutput.Add(kohOut); // 0,0,1,0,0,0,0
+                    Console.Write(" Kohonen output -> ");
+                    foreach (var d in kohOut)
+                    {
+                        Console.Write(d + " ");
+						
+                    }
+					Console.WriteLine();
+                }
+                secondLayer.Learn(kohonenOutput.ToArray(), expectedOutputForSecondLayer, 10000);
+				Console.WriteLine("\n Warstwa Druga zostala nauczona rozpoznawania wzorcow");
+				foreach (double[] kohOut in kohonenOutput)
+				{
+					Console.Write(" Grossberg Output------> ");
+					foreach (var outp in secondLayer.Output(kohOut)) 
+					{
+						Console.WriteLine(outp + " ");
+						Console.WriteLine();
+					}
+				}
+
             }
 
             if (saveOutputNet)
@@ -105,6 +175,7 @@ namespace Neurony
                 double[][] result = Test(net, data);
                 PrintResult(result);
             }
+            Console.ReadKey();
         }
 
         private static void PrintResult(double[][] result)
@@ -156,6 +227,43 @@ namespace Neurony
             sr.Close();
 
             return result.ToArray();
+        }
+
+        private static List<double[][]> ReadCounterPropagationData(String learnFilename)
+        {
+            StreamReader sr = File.OpenText(learnFilename);
+
+            String line;
+
+            List<double[]> r1 = new List<double[]>();
+            List<double[]> r2 = new List<double[]>();
+            while ((line = sr.ReadLine()) != null)
+            {
+                string[] tab = line.Split(' ');
+                string kohData = tab[0];
+                string secLayerData = tab[1];
+
+                List<double> v1 = new List<double>();
+                foreach (String s in kohData.Split(';'))
+                {
+                    v1.Add(double.Parse(s));
+                }
+                r1.Add(v1.ToArray());
+
+                List<double> v2 = new List<double>();
+                foreach (String s in secLayerData.Split(';'))
+                {
+                    v2.Add(double.Parse(s));
+                }
+                r2.Add(v2.ToArray());
+            }
+            sr.Close();
+
+            List<double[][]> result = new List<double[][]>();
+            result.Add(r1.ToArray());
+            result.Add(r2.ToArray());
+
+            return  result;
         }
     }
 }

@@ -57,8 +57,10 @@ namespace Neurony.XML
                     {
                         case "kohonen":
                             layers.Add(new KohonenLayer(neurons.ToArray()));
+                            
                             break;
                         case "normal":
+                            
                             layers.Add(new NeuralLayer(neurons.ToArray()));
                             break;
                     }

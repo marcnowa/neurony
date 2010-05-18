@@ -32,7 +32,7 @@ namespace Neurony.Logic
             {
                 double[] weights = new double[inputSize];
                 if (randomWeights)
-                    RandomFeel(weights, randomWeightsLimits);
+                    RandomFill(weights, randomWeightsLimits);
                 neurons[j] = new Neuron(weights, 0);
             }
 
@@ -77,10 +77,16 @@ namespace Neurony.Logic
             }
             double[] result = new double[neurons.Length];
             result[minNeuronId] = 1;
+
+            /*foreach (var item in result)
+            {
+                Console.Write(item + " ");
+            }
+            Console.WriteLine();*/
             return result;
         }
 
-        private void RandomFeel(double[] weights, double[] limits)
+        public static void RandomFill(double[] weights, double[] limits)
         {
             Random r = new Random();
             for (int i = 0; i < weights.Length; i++)
