@@ -24,6 +24,8 @@ namespace Neurony
             bool input = false;
             String inputFilename = "";
 
+            bool wh = false;
+
             int dimension = 2;
 
 			// Learn params - default values
@@ -85,6 +87,11 @@ namespace Neurony
 						divisor = double.Parse(args[i + 1]);
 						i += 2;
 					}
+                }
+
+                if (args[i] == "-wh")
+                {
+                    wh = true;
                 }
                 
                 if (args[i] == "-nn" || args[i]=="--no-neighbourhood")
@@ -162,7 +169,7 @@ namespace Neurony
                 
                 inputSize = neuralCount;
                 neuralCount = expectedOutputForSecondLayer[0].Length;
-				NeuralLayer secondLayer = new NeuralLayer(inputSize, neuralCount, randomWeights, randomWeightsLimits);
+				NeuralLayer secondLayer = new NeuralLayer(inputSize, neuralCount, randomWeights, randomWeightsLimits, wh);
 
                 net = new NeuralNetwork(new AbstractNeuralLayer[2] { kohonenLayer, secondLayer });
 
