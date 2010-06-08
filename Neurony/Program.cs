@@ -26,8 +26,21 @@ namespace Neurony
 
             int dimension = 2;
 
+			// Learn params - default values
+			// 1. Kohonen params 
+			int phases = 4;
+			// 2. Counter Propagation params
+			double ni = 0.1;
+			int lengthOfPhase = 1000;
+			double divisor = 10;
+
+			foreach( String s in args) {
+				Console.WriteLine(s);
+			}
+
             for (int i = 0; i < args.Length; i++)
             {
+				
                 if (args[i] == "-i")
                 {
                     input = true;
@@ -38,12 +51,40 @@ namespace Neurony
                 {
                     learn = true;
                     learnFilename = args[i + 1];
-                    i++;
-                } else if (args[i] == "-lcp" || args[i]=="--learn-counter-propagation")
+					i += 2;
+
+					if (args[i] == "-phases")
+					{
+						phases = int.Parse(args[i + 1]);
+						i += 2;	
+					}
+                } 
+				else if (args[i] == "-cpl" || args[i]=="--counter-propagation-learn")
                 {
                     cp_learn = true;
                     learnFilename = args[i + 1];
-                    i++;
+                    i+=2;
+					
+					if (args[i] == "-phases")
+					{
+						phases = int.Parse(args[i + 1]);
+						i += 2;
+					}
+					if (args[i] == "-ni")
+					{
+						ni = double.Parse(args[i + 1]);
+						i += 2;
+					}
+					if (args[i] == "-length")
+					{
+						lengthOfPhase = int.Parse(args[i + 1]);
+						i += 2;
+					}
+					if (args[i] == "-divisor")
+					{
+						divisor = double.Parse(args[i + 1]);
+						i += 2;
+					}
                 }
                 
                 if (args[i] == "-nn" || args[i]=="--no-neighbourhood")
@@ -85,6 +126,11 @@ namespace Neurony
                 }
             }
 
+			Console.WriteLine("wyjściowo: phases = " + phases 
+				+ " / ni = "+ ni
+				+ " / lengthOfPhase= " + lengthOfPhase
+				+ " / divisor= " + divisor);
+
             NeuralNetwork net = null;
 
             if (input)
@@ -100,7 +146,7 @@ namespace Neurony
                 int inputSize = data[0].Length;
                 KohonenLayer kohonenLayer = new KohonenLayer(inputSize, neuralCount, randomWeights, randomWeightsLimits, dimension);                
                 net = new NeuralNetwork(new AbstractNeuralLayer[1] {kohonenLayer});
-                kohonenLayer.Learn(data, 10000, useNeighbourhood);
+                kohonenLayer.Learn(data, 10000, useNeighbourhood, phases);
             }
             else if (cp_learn)
             {
@@ -110,23 +156,8 @@ namespace Neurony
                 double[][] kohonenInput = data[0];
                 double[][] expectedOutputForSecondLayer = data[1];
 
-                    foreach (double[] inputData in kohonenInput) {
-                        Console.Write(" >> ");
-                        foreach (var d in inputData) {
-                            Console.Write(d + " ");
-                        }
-                    } Console.WriteLine();
-                    foreach (double[] m in expectedOutputForSecondLayer) {
-                        Console.Write(" >> ");
-                        foreach (var de in m) {
-                            Console.Write(de + " ");
-                        }
-                    } Console.WriteLine();
-
                 int inputSize = kohonenInput[0].Length;
-                
                 int neuralCount = kohonenInput.Length; // == expectedOutputForSecondLayer.Length
-               
                 KohonenLayer kohonenLayer = new KohonenLayer(inputSize, neuralCount, randomWeights, randomWeightsLimits, dimension);
                 
                 inputSize = neuralCount;
@@ -134,7 +165,13 @@ namespace Neurony
 				NeuralLayer secondLayer = new NeuralLayer(inputSize, neuralCount, randomWeights, randomWeightsLimits);
 
                 net = new NeuralNetwork(new AbstractNeuralLayer[2] { kohonenLayer, secondLayer });
-                kohonenLayer.Learn(kohonenInput, 10000, useNeighbourhood);
+
+				net.Learn(kohonenInput, useNeighbourhood,
+					expectedOutputForSecondLayer, ni, divisor,
+					phases, lengthOfPhase);
+
+				/*
+				kohonenLayer.Learn(kohonenInput, phases, useNeighbourhood, phases);
                 Console.WriteLine("Warstwa Kohonena zostala nauczona rozpoznawania wzorcow");
 
                 List<double[]> kohonenOutput = new List<double[]>();
@@ -145,12 +182,13 @@ namespace Neurony
                     Console.Write(" Kohonen output -> ");
                     foreach (var d in kohOut)
                     {
-                        Console.Write(d + " ");
-						
+                        Console.Write(d + " ");	
                     }
 					Console.WriteLine();
                 }
-                secondLayer.Learn(kohonenOutput.ToArray(), expectedOutputForSecondLayer, 10000);
+				
+
+				secondLayer.Learn(kohonenOutput.ToArray(), expectedOutputForSecondLayer, phases, lengthOfPhase, ni, divisor);
 				Console.WriteLine("\n Warstwa Druga zostala nauczona rozpoznawania wzorcow");
 				foreach (double[] kohOut in kohonenOutput)
 				{
@@ -161,8 +199,8 @@ namespace Neurony
 						Console.WriteLine();
 					}
 				}
-
-            }
+				*/
+			}
 
             if (saveOutputNet)
             {

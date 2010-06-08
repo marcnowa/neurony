@@ -34,19 +34,18 @@ namespace Neurony.Logic
                 neurons[j] = new Neuron(weights, 0, TransitionFunction.Sigmoid);
             }
         }
-		public void Learn(double[][] kohOutput, double[][] expectedVal, int length)
+		
+		public void Learn(double[][] kohOutput, double[][] expectedVal, int phases, int length, double ni, double divisor)
 		{
 			// kohOutput- zestaw odpowiedzi warstwy kohonena
-			int phases = 4; // uczenie z nauczycielem
+			// ni- stala nauczania
 
-			if (neurons.Length != expectedVal[0].Length) //ilosc neuronow
+			if (neurons.Length != expectedVal[0].Length)
 			{
 				throw new System.ArgumentException();
 			}
 
 			int iloscNeuronowKohonena = kohOutput[0].Length; //dlugosc kazdej odpowiedzi warstwy kohonena jest stala
-			double ni = 0.1; //stala nauczania
-
 
 			for (int phase = 1; phase < phases + 1; phase++)
 			{
@@ -65,9 +64,8 @@ namespace Neurony.Logic
 							}
 						}
 					}
-					
 				}
-				ni /= 10;
+				ni /= divisor;
 			}
 		}
 

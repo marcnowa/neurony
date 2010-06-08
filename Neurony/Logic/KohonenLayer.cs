@@ -8,8 +8,6 @@ namespace Neurony.Logic
     class KohonenLayer : AbstractNeuralLayer
     {
         private Neuron[] neurons;
-        private int phases = 4;
-
 
         public KohonenLayer(Neuron[] neurons)
         {
@@ -125,7 +123,7 @@ namespace Neurony.Logic
             return result;
         }
 
-        public void Learn(double[][] data, int length, bool useNeighbourhood)
+		public void Learn(double[][] data, int length, bool useNeighbourhood, int phases)
         {
             for (int phase = 1; phase < phases + 1; phase++)
             {

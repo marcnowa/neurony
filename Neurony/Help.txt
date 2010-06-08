@@ -20,15 +20,18 @@ Przykłady uruchomienia:
 
 TO DO
 sparametryzować: ilosc krokow, wspolczynniki uczenia
-regula delta
+learn - abstrakcyjna metoda, uczenie sie calej sieci
 sprawko
+
+szczegolny przypadek - sasiedztwo przeszkadza
+
 
 Lista zmian:	
 	+ Program: uruchamianie z opcja -lcp (learn-counter-propagation) 
 		// musi byc odpowiedni plik uczacy, na ktorego podstawie tworzymy siec (format tego pliku determinuje strukture sieci - ilosc neuronow w 2giej warstwie i w warstwie kohonnena (tyle ile rodzajow "obrazkow" uczacych))
 	+ wczytywanie danych z pliku uczacego
 		private static List<double[][]> Program.ReadCounterPropagationData(String learnFilename)
-	+ dodatkowy konstruktor NeuralLayer i GrossbergsLayer (jak to ładnie zrobic?)
+	+ dodatkowy konstruktor NeuralLayer
 		public NeuralLayer.NeuralLayer (int inputSize, int neuronsSize, bool randomWeights, double[] randomWeightsLimits)
 	+ uczenie z nauczycielem warstwy "Grossberga"
 		public void NeuralLayer.Learn(double[][] kohOutput, double[][] expectedVal, int length)
