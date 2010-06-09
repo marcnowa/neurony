@@ -132,12 +132,7 @@ namespace Neurony.Logic
             for (int i = 0; i < Neurons.Length; i++)
             {
                 Neuron n = Neurons[i];
-
-                for (int j = 0; j < n.Weights.Length; j++)
-                {
-                    n.Weights[j] += learningRate * n.Error * TransitionFunctionDerivative(n.OutputSignal) * n.InputSignal[j]; ;
-                }
-                n.Bias += learningRate * n.Error * TransitionFunctionDerivative(n.OutputSignal);
+                n.UpdateWeights(learningRate, TransitionFunctionDerivative(n.OutputSignal));
             }
         }
     }

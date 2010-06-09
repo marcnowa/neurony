@@ -87,5 +87,15 @@ namespace Neurony.Logic
 
             Bias = r.NextDouble() * (limits[1] - limits[0]) + limits[0];
         }
+
+        internal void UpdateWeights(double learningRate, double transDerOut)
+        {
+
+            for (int j = 0; j < Weights.Length; j++)
+            {
+                this.Weights[j] += learningRate * this.Error * transDerOut * this.InputSignal[j]; ;
+            }
+            this.Bias += learningRate * this.Error * transDerOut;
+        }
     }
 }

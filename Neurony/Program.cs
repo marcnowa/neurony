@@ -31,7 +31,7 @@ namespace Neurony
             net.BackPropagationLearn(
                 new double[4][] { i1, i2, i3, i4 },
                 new double[4][] { o1, o2, o3, o4 },
-                10000, 0.1);
+                20000, 0.25);
 
             double[] res = net.Output(i1);
             Console.WriteLine(res[0]);
