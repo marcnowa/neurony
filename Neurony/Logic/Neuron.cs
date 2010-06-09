@@ -7,9 +7,12 @@ namespace Neurony.Logic
 {
     class Neuron
     {
-        private double m_Bias;
+        public double Bias;
         public double[] Weights;
-        private double m_Result;
+        public double OutputSignal;
+        public double[] InputSignal;
+
+        public double Error;
 
         public double[] Position;
 
@@ -26,7 +29,7 @@ namespace Neurony.Logic
 
         private void Init(double[] weights, double bias, TransitionFunction function)
         {
-            m_Bias = bias;
+            Bias = bias;
             Weights = weights;
             TransitionFunction = function;
         }
@@ -48,16 +51,18 @@ namespace Neurony.Logic
 
         public double Compute(double[] input)
         {
+            InputSignal = input;
+
             if (input.Length != Weights.Length)
                 throw new System.ArgumentException();
 
-            double result = m_Bias;
+            double result = Bias;
 
             for (int i = 0; i < input.Length; i++)
                 result += input[i] * Weights[i];
 
-            m_Result = ApplyTransitionFunction(result);
-            return m_Result;
+            OutputSignal = ApplyTransitionFunction(result);
+            return OutputSignal;
         }
 
         public override string ToString()
@@ -67,9 +72,20 @@ namespace Neurony.Logic
             {
                 result += "\t\t\t<connection weight=\"" + weight + "\"/>" + Environment.NewLine;
             }
-            result += "\t\t\t<bias weight=\"" + m_Bias + "\"/>" + Environment.NewLine;
+            result += "\t\t\t<bias weight=\"" + Bias + "\"/>" + Environment.NewLine;
             result += "\t\t</neuron>" + Environment.NewLine;
             return result;
+        }
+
+        internal void RandomFill(double[] limits)
+        {
+            Random r = new Random();
+            for (int i = 0; i < Weights.Length; i++)
+            {
+                Weights[i] = r.NextDouble() * (limits[1] - limits[0]) + limits[0];
+            }
+
+            Bias = r.NextDouble() * (limits[1] - limits[0]) + limits[0];
         }
     }
 }

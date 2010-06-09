@@ -29,9 +29,11 @@ namespace Neurony.Logic
             for (int j = 0; j < neuronsSize; j++)
             {
                 double[] weights = new double[inputSize];
-                if (randomWeights)
-                    RandomFill(weights, randomWeightsLimits);
+
                 neurons[j] = new Neuron(weights, 0);
+
+                if (randomWeights)
+                    neurons[j].RandomFill(randomWeightsLimits);
             }
 
             int length = (int)Math.Ceiling(Math.Pow(neuronsSize, 1.0 / neighbourhoodDimension));
@@ -84,14 +86,7 @@ namespace Neurony.Logic
             return result;
         }
 
-        public static void RandomFill(double[] weights, double[] limits)
-        {
-            Random r = new Random();
-            for (int i = 0; i < weights.Length; i++)
-            {
-                weights[i] = r.NextDouble()*(limits[1]-limits[0])+limits[0];
-            }
-        }
+
 
         private void UpdateWeights(double[] data, int phase, bool useNeighbourhood)
         {

@@ -17,7 +17,7 @@ namespace Neurony.Logic
         {
             this.layers = layers;
         }
-		public void Learn(double[][] kohonenInput, bool useNeighbourhood, 
+		public void CounterPropagationLearn(double[][] kohonenInput, bool useNeighbourhood, 
 			double[][] expectedVal, double ni, double divisor,
 			int phases, int phaseLength)
 		{
@@ -76,6 +76,43 @@ namespace Neurony.Logic
                 result += layer.ToString();
             }
             result += "</network>";
+            return result;
+        }
+
+
+        public void BackPropagationLearn(double[][] input, double[][] expectedOutput, int length, double learningRate)
+        {
+            for (int i = 0; i < length; i++)
+            {
+                for (int j = 0; j < input.Length; j++)
+                {
+                    double[] output = Output(input[j]);
+                    double[] error = CalculateError(output, expectedOutput[j]);
+
+                    foreach (AbstractNeuralLayer l in Layers.Reverse())
+                    {
+                        NeuralLayer layer = (NeuralLayer)l;
+                        error = layer.ComputeInputError(error);
+                    }
+
+                    foreach (AbstractNeuralLayer l in Layers)
+                    {
+                        NeuralLayer layer = (NeuralLayer)l;
+                        layer.UpdateNeurons(learningRate);
+                    }
+                }
+            }
+        }
+
+        private double[] CalculateError(double[] output, double[] expectedOutput)
+        {
+            double[] result = new double[output.Length];
+
+            for (int i = 0; i < output.Length; i++)
+            {
+                result[i] = expectedOutput[i] - output[i];
+            }
+
             return result;
         }
     }
