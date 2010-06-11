@@ -17,6 +17,18 @@ namespace Neurony.Logic
         {
             this.layers = layers;
         }
+
+        public NeuralNetwork(int inputSize, int[] neurons, double[] weightsLimits, TransitionFunction tf)
+        {
+            AbstractNeuralLayer[] layers = new AbstractNeuralLayer[neurons.Length];
+            for (int i = 0; i < neurons.Length; i++)
+            {
+                layers[i] = new NeuralLayer(inputSize, neurons[i], true, weightsLimits, tf);
+                inputSize = neurons[i];
+            }
+            this.layers = layers;
+        }
+
 		public void CounterPropagationLearn(double[][] kohonenInput, bool useNeighbourhood, 
 			double[][] expectedVal, double ni, double divisor,
 			int phases, int phaseLength)

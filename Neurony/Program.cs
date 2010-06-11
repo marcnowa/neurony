@@ -9,46 +9,7 @@ namespace Neurony
 {
     class Program
     {
-        static void Main()
-        {
-            NeuralLayer l1 = new NeuralLayer(2, 3, true, new double[2] { -1, 1 }, false);
-            NeuralLayer l2 = new NeuralLayer(3, 2, true, new double[2] { -1, 1 }, false);
-            NeuralLayer l3 = new NeuralLayer(2, 1, true, new double[2] { -1, 1 }, false);
-            NeuralNetwork net = new NeuralNetwork(new AbstractNeuralLayer[3] { l1, l2, l3 });
-
-            double[] i1 = new double[2] { 0, 0 };
-            double[] o1 = new double[1] { 0 };
-
-            double[] i2 = new double[2] { 1, 1 };
-            double[] o2 = new double[1] { 0 };
-
-            double[] i3 = new double[2] { 1, 0 };
-            double[] o3 = new double[1] { 1 };
-
-            double[] i4 = new double[2] { 0, 1 };
-            double[] o4 = new double[1] { 1 };
-
-            net.BackPropagationLearn(
-                new double[4][] { i1, i2, i3, i4 },
-                new double[4][] { o1, o2, o3, o4 },
-                20000, 0.25);
-
-            double[] res = net.Output(i1);
-            Console.WriteLine(res[0]);
-
-            res = net.Output(i2);
-            Console.WriteLine(res[0]);
-
-            res = net.Output(i3);
-            Console.WriteLine(res[0]);
-
-            res = net.Output(i4);
-            Console.WriteLine(res[0]);
-
-            Console.ReadLine();
-        }
-
-        static void Main1(string[] args)
+        static void Main(string[] args)
         {
             bool learn = false;
             bool cp_learn = false;
@@ -63,6 +24,8 @@ namespace Neurony
             bool input = false;
             String inputFilename = "";
 
+            bool bplearn = false;
+
             bool wh = false;
 
             int dimension = 2;
@@ -75,10 +38,7 @@ namespace Neurony
             int lengthOfPhase = 1000;
             double divisor = 10;
 
-            foreach (String s in args)
-            {
-                Console.WriteLine(s);
-            }
+            int[] neuronCounts = new int[3] { 3, 2, 1 };
 
             for (int i = 0; i < args.Length; i++)
             {
@@ -89,44 +49,48 @@ namespace Neurony
                     inputFilename = args[i + 1];
                     i++;
                 }
+
+                if (args[i] == "-bpl")
+                {
+                    bplearn = true;
+                    learnFilename = args[i + 1];
+                    i++;
+                }
+
                 if (args[i] == "-l" || args[i] == "--learn")
                 {
                     learn = true;
                     learnFilename = args[i + 1];
                     i += 2;
-
-                    if (args[i] == "-phases")
-                    {
-                        phases = int.Parse(args[i + 1]);
-                        i += 2;
-                    }
                 }
-                else if (args[i] == "-cpl" || args[i] == "--counter-propagation-learn")
+
+                if (args[i] == "-phases")
+                {
+                    phases = int.Parse(args[i + 1]);
+                    i += 2;
+                }
+
+                if (args[i] == "-cpl" || args[i] == "--counter-propagation-learn")
                 {
                     cp_learn = true;
                     learnFilename = args[i + 1];
-                    i += 2;
+                    i++;
+                }
 
-                    if (args[i] == "-phases")
-                    {
-                        phases = int.Parse(args[i + 1]);
-                        i += 2;
-                    }
-                    if (args[i] == "-ni")
-                    {
-                        ni = double.Parse(args[i + 1]);
-                        i += 2;
-                    }
-                    if (args[i] == "-length")
-                    {
-                        lengthOfPhase = int.Parse(args[i + 1]);
-                        i += 2;
-                    }
-                    if (args[i] == "-divisor")
-                    {
-                        divisor = double.Parse(args[i + 1]);
-                        i += 2;
-                    }
+                if (args[i] == "-ni")
+                {
+                    ni = double.Parse(args[i + 1]);
+                    i++;
+                }
+                if (args[i] == "-length")
+                {
+                    lengthOfPhase = int.Parse(args[i + 1]);
+                    i++;
+                }
+                if (args[i] == "-divisor")
+                {
+                    divisor = double.Parse(args[i + 1]);
+                    i++;
                 }
 
                 if (args[i] == "-wh")
@@ -171,12 +135,18 @@ namespace Neurony
                     Console.WriteLine(File.ReadAllText("Help.txt"));
                     return;
                 }
+
+                if (args[i] == "-neurons")
+                {
+                    neuronCounts = ParseNeuronCounts(args[i + 1]);
+                    i++;
+                }
             }
 
-            Console.WriteLine("wyjściowo: phases = " + phases
+            /*Console.WriteLine("wyjściowo: phases = " + phases
                 + " / ni = " + ni
                 + " / lengthOfPhase= " + lengthOfPhase
-                + " / divisor= " + divisor);
+                + " / divisor= " + divisor);*/
 
             NeuralNetwork net = null;
 
@@ -195,10 +165,11 @@ namespace Neurony
                 net = new NeuralNetwork(new AbstractNeuralLayer[1] { kohonenLayer });
                 kohonenLayer.Learn(data, 10000, useNeighbourhood, phases);
             }
-            else if (cp_learn)
+            
+            if (cp_learn)
             {
                 //dane wejściowe dla warstwy Kohonena + wyjściowe dla warstwy 2giej (output programu)
-                List<double[][]> data = ReadCounterPropagationData(learnFilename);
+                List<double[][]> data = ReadInputAndAnswersData(learnFilename);
 
                 double[][] kohonenInput = data[0];
                 double[][] expectedOutputForSecondLayer = data[1];
@@ -209,44 +180,33 @@ namespace Neurony
 
                 inputSize = neuralCount;
                 neuralCount = expectedOutputForSecondLayer[0].Length;
-                NeuralLayer secondLayer = new NeuralLayer(inputSize, neuralCount, randomWeights, randomWeightsLimits, wh);
+
+                TransitionFunction tf = TransitionFunction.Sigmoid;
+                if (wh)
+                {
+                    tf = TransitionFunction.Linear;
+                }
+
+                NeuralLayer secondLayer = new NeuralLayer(inputSize, neuralCount, randomWeights, randomWeightsLimits, tf);
 
                 net = new NeuralNetwork(new AbstractNeuralLayer[2] { kohonenLayer, secondLayer });
 
                 net.CounterPropagationLearn(kohonenInput, useNeighbourhood,
                     expectedOutputForSecondLayer, ni, divisor,
                     phases, lengthOfPhase);
+            }
 
-                /*
-                kohonenLayer.Learn(kohonenInput, phases, useNeighbourhood, phases);
-                Console.WriteLine("Warstwa Kohonena zostala nauczona rozpoznawania wzorcow");
+            if (bplearn)
+            {
+                List<double[][]> data = ReadInputAndAnswersData(learnFilename);
+                double[][] inputData = data[0];
+                double[][] expectedOutput = data[1];
 
-                List<double[]> kohonenOutput = new List<double[]>();
-                foreach (double[] inputData in kohonenInput)
-                {
-                    double [] kohOut = kohonenLayer.Output(inputData);
-                    kohonenOutput.Add(kohOut); // 0,0,1,0,0,0,0
-                    Console.Write(" Kohonen output -> ");
-                    foreach (var d in kohOut)
-                    {
-                        Console.Write(d + " ");	
-                    }
-                    Console.WriteLine();
-                }
-				
+                int inputSize = inputData[0].Length;
 
-                secondLayer.Learn(kohonenOutput.ToArray(), expectedOutputForSecondLayer, phases, lengthOfPhase, ni, divisor);
-                Console.WriteLine("\n Warstwa Druga zostala nauczona rozpoznawania wzorcow");
-                foreach (double[] kohOut in kohonenOutput)
-                {
-                    Console.Write(" Grossberg Output------> ");
-                    foreach (var outp in secondLayer.Output(kohOut)) 
-                    {
-                        Console.WriteLine(outp + " ");
-                        Console.WriteLine();
-                    }
-                }
-                */
+                net = new NeuralNetwork(inputSize, neuronCounts, randomWeightsLimits, TransitionFunction.Sigmoid);
+
+                net.BackPropagationLearn(inputData, expectedOutput, lengthOfPhase, ni);
             }
 
             if (saveOutputNet)
@@ -261,6 +221,16 @@ namespace Neurony
                 PrintResult(result);
             }
             Console.ReadKey();
+        }
+
+        private static int[] ParseNeuronCounts(string p)
+        {
+            List<int> result = new List<int>();
+            foreach (string n in p.Split(';'))
+            {
+                result.Add(int.Parse(n));
+            }
+            return result.ToArray();
         }
 
         private static void PrintResult(double[][] result)
@@ -314,7 +284,7 @@ namespace Neurony
             return result.ToArray();
         }
 
-        private static List<double[][]> ReadCounterPropagationData(String learnFilename)
+        private static List<double[][]> ReadInputAndAnswersData(String learnFilename)
         {
             StreamReader sr = File.OpenText(learnFilename);
 

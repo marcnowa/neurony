@@ -1,5 +1,5 @@
 ﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <StartArguments>-cpl cp\learn.dat -phases 5 -ni 0,1 -length 1000 -divisor 10 -rw -1;0 -o cpOutput.xml -t cp\test.dat</StartArguments>
+    <StartArguments>-bpl bp\learn.dat -t bp\test.dat -rw 0;1 -length 20000 -ni 0,25 -neurons 3;2;1</StartArguments>
   </PropertyGroup>
 </Project>

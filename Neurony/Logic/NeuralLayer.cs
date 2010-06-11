@@ -22,16 +22,9 @@ namespace Neurony.Logic
             this.neurons = neurons;
         }
 
-        public NeuralLayer(int inputSize, int neuronsSize, bool randomWeights, double[] randomWeightsLimits, bool useWh)
+        public NeuralLayer(int inputSize, int neuronsSize, bool randomWeights, double[] randomWeightsLimits, TransitionFunction tf)
         {
             neurons = new Neuron[neuronsSize];
-
-            TransitionFunction tf = TransitionFunction.Sigmoid;
-            if (useWh)
-            {
-                tf = TransitionFunction.Linear;
-            }
-
 
             for (int j = 0; j < neuronsSize; j++)
             {
