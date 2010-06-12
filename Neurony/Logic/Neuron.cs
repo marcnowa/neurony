@@ -77,7 +77,7 @@ namespace Neurony.Logic
             return result;
         }
 
-        internal void RandomFill(double[] limits)
+        internal void RandomFill(double[] limits, bool useBias)
         {
             Random r = new Random();
             for (int i = 0; i < Weights.Length; i++)
@@ -85,17 +85,19 @@ namespace Neurony.Logic
                 Weights[i] = r.NextDouble() * (limits[1] - limits[0]) + limits[0];
             }
 
-            Bias = r.NextDouble() * (limits[1] - limits[0]) + limits[0];
+            if (useBias)
+                Bias = r.NextDouble() * (limits[1] - limits[0]) + limits[0];
         }
 
-        internal void UpdateWeights(double learningRate, double transDerOut)
+        internal void UpdateWeights(double learningRate, double transDerOut, bool useBias)
         {
 
             for (int j = 0; j < Weights.Length; j++)
             {
                 this.Weights[j] += learningRate * this.Error * transDerOut * this.InputSignal[j]; ;
             }
-            this.Bias += learningRate * this.Error * transDerOut;
+            if (useBias)
+                this.Bias += learningRate * this.Error * transDerOut;
         }
     }
 }

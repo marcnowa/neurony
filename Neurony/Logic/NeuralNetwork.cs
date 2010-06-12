@@ -18,12 +18,12 @@ namespace Neurony.Logic
             this.layers = layers;
         }
 
-        public NeuralNetwork(int inputSize, int[] neurons, double[] weightsLimits, TransitionFunction tf)
+        public NeuralNetwork(int inputSize, int[] neurons, double[] weightsLimits, TransitionFunction tf, bool useBias)
         {
             AbstractNeuralLayer[] layers = new AbstractNeuralLayer[neurons.Length];
             for (int i = 0; i < neurons.Length; i++)
             {
-                layers[i] = new NeuralLayer(inputSize, neurons[i], true, weightsLimits, tf);
+                layers[i] = new NeuralLayer(inputSize, neurons[i], true, weightsLimits, tf, useBias);
                 inputSize = neurons[i];
             }
             this.layers = layers;
@@ -92,7 +92,7 @@ namespace Neurony.Logic
         }
 
 
-        public void BackPropagationLearn(double[][] input, double[][] expectedOutput, int length, double learningRate)
+        public void BackPropagationLearn(double[][] input, double[][] expectedOutput, int length, double learningRate, bool useBias)
         {
             for (int i = 0; i < length; i++)
             {
@@ -110,7 +110,7 @@ namespace Neurony.Logic
                     foreach (AbstractNeuralLayer l in Layers)
                     {
                         NeuralLayer layer = (NeuralLayer)l;
-                        layer.UpdateNeurons(learningRate);
+                        layer.UpdateNeurons(learningRate, useBias);
                     }
                 }
             }

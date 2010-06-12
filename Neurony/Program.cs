@@ -26,6 +26,8 @@ namespace Neurony
 
             bool bplearn = false;
 
+            bool usebias = true;
+
             bool wh = false;
 
             int dimension = 2;
@@ -48,6 +50,11 @@ namespace Neurony
                     input = true;
                     inputFilename = args[i + 1];
                     i++;
+                }
+
+                if (args[i] == "-nb")
+                {
+                    usebias = false;
                 }
 
                 if (args[i] == "-bpl")
@@ -187,7 +194,7 @@ namespace Neurony
                     tf = TransitionFunction.Linear;
                 }
 
-                NeuralLayer secondLayer = new NeuralLayer(inputSize, neuralCount, randomWeights, randomWeightsLimits, tf);
+                NeuralLayer secondLayer = new NeuralLayer(inputSize, neuralCount, randomWeights, randomWeightsLimits, tf, true);
 
                 net = new NeuralNetwork(new AbstractNeuralLayer[2] { kohonenLayer, secondLayer });
 
@@ -204,9 +211,9 @@ namespace Neurony
 
                 int inputSize = inputData[0].Length;
 
-                net = new NeuralNetwork(inputSize, neuronCounts, randomWeightsLimits, TransitionFunction.Sigmoid);
+                net = new NeuralNetwork(inputSize, neuronCounts, randomWeightsLimits, TransitionFunction.Sigmoid, usebias);
 
-                net.BackPropagationLearn(inputData, expectedOutput, lengthOfPhase, ni);
+                net.BackPropagationLearn(inputData, expectedOutput, lengthOfPhase, ni, usebias);
             }
 
             if (saveOutputNet)

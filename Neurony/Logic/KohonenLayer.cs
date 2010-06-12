@@ -33,7 +33,7 @@ namespace Neurony.Logic
                 neurons[j] = new Neuron(weights, 0);
 
                 if (randomWeights)
-                    neurons[j].RandomFill(randomWeightsLimits);
+                    neurons[j].RandomFill(randomWeightsLimits, true);
             }
 
             int length = (int)Math.Ceiling(Math.Pow(neuronsSize, 1.0 / neighbourhoodDimension));

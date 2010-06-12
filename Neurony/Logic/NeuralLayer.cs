@@ -22,7 +22,7 @@ namespace Neurony.Logic
             this.neurons = neurons;
         }
 
-        public NeuralLayer(int inputSize, int neuronsSize, bool randomWeights, double[] randomWeightsLimits, TransitionFunction tf)
+        public NeuralLayer(int inputSize, int neuronsSize, bool randomWeights, double[] randomWeightsLimits, TransitionFunction tf, bool useBias)
         {
             neurons = new Neuron[neuronsSize];
 
@@ -33,7 +33,7 @@ namespace Neurony.Logic
 
                 if (randomWeights)
                 {
-                    neurons[j].RandomFill(randomWeightsLimits);
+                    neurons[j].RandomFill(randomWeightsLimits, useBias);
                 }
             }
         }
@@ -119,13 +119,13 @@ namespace Neurony.Logic
             return result;
         }
 
-        internal void UpdateNeurons(double learningRate)
+        internal void UpdateNeurons(double learningRate, bool useBias)
         {
 
             for (int i = 0; i < Neurons.Length; i++)
             {
                 Neuron n = Neurons[i];
-                n.UpdateWeights(learningRate, TransitionFunctionDerivative(n.OutputSignal));
+                n.UpdateWeights(learningRate, TransitionFunctionDerivative(n.OutputSignal), useBias);
             }
         }
     }
